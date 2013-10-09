@@ -3,9 +3,13 @@
 ###
 # Ignore Chef key files and secrets
 .chef/*.pem
+.chef/*.orig
+.chef/newpublickey
 .chef/encrypted_data_bag_secret
 *.swp
 *.swo
 .vagrant/
 /cookbooks/
 .cache/
+vendor/
+.bundle
