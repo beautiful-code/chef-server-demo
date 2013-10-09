@@ -47,7 +47,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define :chef_client_node do |chef_client_config|
-    chef_client_config.vm.network :hostonly, "10.33.33.50"
+    chef_client_config.vm.network :private_network, ip: "10.33.33.50"
   end
 
 end 
