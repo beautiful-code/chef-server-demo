@@ -9,7 +9,7 @@
 *.swp
 *.swo
 .vagrant/
-/cookbooks/
 .cache/
 vendor/
 .bundle
+.chef/syntax_check_cache/
