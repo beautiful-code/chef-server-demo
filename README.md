@@ -128,11 +128,11 @@ and we can access the web UI of the chef-server.
 Now open your web browser and specify the FQDN or IP address of the chef-server node to access the Web UI.
 
 #####SSH Keys :
-	After installation Chef Server with default settings, Chef will generate pem keys, which will be used for knife (command line tool for Chef) and Chef clients for authentication with server. We should copy keys from our Chef Server node to “.chef” directory in the project.
+After installation Chef Server with default settings, Chef will generate pem keys, which will be used for knife (command line tool for Chef) and Chef clients for authentication with server. We should copy keys from our Chef Server node to “.chef” directory in the project.
 
  	$ vagrant ssh chef_server_node
 
-	Now you will get the shell access to the chef-server node. From the server node's shell run this command.
+Now you will get the shell access to the chef-server node. From the server node's shell run this command.
 
     $ sudo cp /etc/chef-server/*.pem /vagrant/.chef/
 
