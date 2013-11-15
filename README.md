@@ -100,8 +100,8 @@ It starts the process of bringing up the virtual machine. So after few seconds/m
 
 Pause. Its time to internalize what we've achieved so far. If you look at the provisioning of chef.chef-demo.com, we can reinforce a few concepts:
 
-1) The provisioning is done by chef-solo. chef-solo is a clean and easy way to provision a vm. As mentioned earlier, this is the only machine that we use chef-solo on. The node machine gets provisioned by the chef-server.
-2) We have provided the path for cookbooks, roles and data bags. These are concepts in Chef which you should read up on the side for better appreciation. Feel free to switch and look up what these directories contain.
+1) The provisioning is done by chef-solo. chef-solo is a clean and easy way to provision a vm. As mentioned earlier, this is the only machine that we use chef-solo on. The node machine gets provisioned by the chef-server.<br>
+2) We have provided the path for cookbooks, roles and data bags. These are concepts in Chef which you should read up on the side for better appreciation. Feel free to switch and look up what these directories contain.<br>
 3) We have applied a role called 'chef' on the node. Roles are modular ways of defining behavior on machines. Inspect the roles/chef.json file to get a feel of the behavior defined by this role. At the very bottom you would see a `run_list` key that contains the recipes that need to be cooked on machines that have this role.
 
 
