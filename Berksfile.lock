@@ -2,6 +2,33 @@
   "sources": {
     "chef-server": {
       "path": "./cookbooks/chef-server"
+    },
+    "nginx": {
+      "locked_version": "1.8.0"
+    },
+    "apt": {
+      "locked_version": "2.3.0"
+    },
+    "build-essential": {
+      "locked_version": "1.4.2"
+    },
+    "postgresql": {
+      "locked_version": "3.2.0"
+    },
+    "mysql": {
+      "locked_version": "3.0.4"
+    },
+    "yum": {
+      "locked_version": "2.3.2"
+    },
+    "runit": {
+      "locked_version": "1.2.0"
+    },
+    "ohai": {
+      "locked_version": "1.1.12"
+    },
+    "openssl": {
+      "locked_version": "1.1.0"
     }
   }
 }

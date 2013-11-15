@@ -1,7 +1,5 @@
 mysql Cookbook
 ==============
-[![Build Status](https://secure.travis-ci.org/opscode-cookbooks/mysql.png?branch=master)](http://travis-ci.org/opscode-cookbooks/mysql)
-
 Installs and configures MySQL client or server.
 
 
@@ -70,7 +68,7 @@ See the `attributes/server.rb` or `attributes/client.rb` for default values. Sev
 * `node['mysql']['old_passwords']` - Sets the `old_passwords` value in
   my.cnf.
 * `node['mysql']['pid_file']` - Path to the mysqld.pid file
-* `node['mysql']['port']` - Listen port for MySQLd
+* `node['mysql']['port']` - Liten port for MySQLd
 * `node['mysql']['reload_action']` - Action to take when mysql conf
   files are modified. Also allows "reload" and "none".
 * `node['mysql']['root_group']` - The default group of the "root" user
@@ -90,7 +88,7 @@ Normally, root should only be allowed to connect from 'localhost'.  This ensures
 
 * `node['mysql']['allow_remote_root']` - If true Sets root access from '%'. If false deletes any non-localhost root users.
 
-By default, MySQL comes with a database named 'test' that anyone can access.  This is also intended only for testing, and should be removed before moving into a production environment. This will also drop any user privileges to the test database and any DB named test_% .
+By default, MySQL comes with a database named 'test' that anyone can access.  This is also intended only for testing, and should be removed before moving into a production environment. This will also drop any user privileges to the test databae and any DB named test_% .
 
 * `node['mysql']['remove_test_database']` - Delete the test database and access to it.
 

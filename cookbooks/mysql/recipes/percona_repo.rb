@@ -17,35 +17,32 @@
 # limitations under the License.
 #
 
-case node['platform_family']
-when 'debian'
-  include_recipe 'apt::default'
 
-  apt_repository 'percona' do
-    uri          node['mysql']['percona']['apt_uri']
+case node['platform']
+when "ubuntu", "debian"
+  include_recipe "apt"
+  apt_repository "percona" do
+    uri node['mysql']['percona']['apt_uri']
     distribution node['lsb']['codename']
-    components   %w[main]
-    keyserver    node['mysql']['percona']['apt_keyserver']
-    key          node['mysql']['percona']['apt_key_id']
-    action       :add
-  end
-when 'rhel'
-  include_recipe 'yum::default'
-
-  yum_key 'RPM-GPG-KEY-percona' do
-    url    'http://www.percona.com/downloads/RPM-GPG-KEY-percona'
+    components [ "main" ]
+    keyserver node['mysql']['percona']['apt_keyserver']
+    key node['mysql']['percona']['apt_key_id']
     action :add
   end
-
+when "centos", "amazon", "redhat"
+  include_recipe "yum"
+  yum_key "RPM-GPG-KEY-percona" do
+    url "http://www.percona.com/downloads/RPM-GPG-KEY-percona"
+    action :add
+  end
   arch = node['kernel']['machine']
-  arch = 'i386' unless arch == 'x86_64'
+  arch = "i386" unless arch == "x86_64"
   pversion = node['platform_version'].split('.').first
-
-  yum_repository 'percona' do
-    repo_name   'Percona'
-    description 'Percona Repo'
-    url         "http://repo.percona.com/centos/#{pversion}/os/#{arch}/"
-    key         'RPM-GPG-KEY-percona'
-    action      :add
+  yum_repository "percona" do
+    repo_name "Percona"
+    description "Percona Repo"
+    url "http://repo.percona.com/centos/#{pversion}/os/#{arch}/"
+    key "RPM-GPG-KEY-percona"
+    action :add
   end
 end
