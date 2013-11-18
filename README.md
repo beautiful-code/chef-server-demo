@@ -25,48 +25,72 @@ Create a file called 'Vagrantfile' in which we have to specify the configuration
 This is our configuration file.
 
     # -*- mode: ruby -*- 
-    # vi: set ft=ruby : 
-     
-    # Vagrantfile API/syntax version. Don't touch unless you know what you're doing! 
-    VAGRANTFILE_API_VERSION = "2" 
+	# vi: set ft=ruby :  
+	# Vagrantfile API/syntax version. Don't touch unless you know what you're doing! 
+	VAGRANTFILE_API_VERSION = "2" 
 
-    Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-      config.berkshelf.enabled = true
-      config.omnibus.chef_version = :latest
+	Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+	  config.berkshelf.enabled = true
+	  config.omnibus.chef_version = :latest
 
-      config.vm.box = "precise64"
-      config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+	  config.vm.box = "precise64"
+	  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 
-      config.vm.provider :virtualbox do |provider|
-        provider.customize ["modifyvm", :id, "--memory", "512"]
-      end
+	  config.vm.provider :virtualbox do |provider|
+	    provider.customize ["modifyvm", :id, "--memory", "1024"]
+	  end
 
-      config.vm.define :chef_server_node do |chef_config|
-        chef_config.vm.network :private_network, ip: "10.33.33.33"
-        chef_config.vm.network :forwarded_port, guest: 80, host: 1234
-        chef_config.vm.network :forwarded_port, guest: 443, host: 8443
-        chef_config.vm.hostname = 'chef.chef-demo.com'
+	  config.vm.define :chef_server_node do |chef_config|
+	    chef_config.vm.network :private_network, ip: "10.33.33.33"
+	    chef_config.vm.network :forwarded_port, guest: 80, host: 1234
+	    chef_config.vm.network :forwarded_port, guest: 443, host: 8443
+	    chef_config.vm.hostname = 'chef.xyz.com'
 
-        chef_config.vm.provision :chef_solo do |chef|
-           chef.cookbooks_path = ["site-cookbooks", "cookbooks"]
-           chef.roles_path = "roles"
-           chef.data_bags_path = "data_bags"
-           chef.log_level = :debug
-           chef.add_role "chef"
-        end
-      end
+	    chef_config.vm.provision :chef_solo do |chef|
+	       chef.cookbooks_path = ["site-cookbooks", "cookbooks"]
+	       chef.roles_path = "roles"
+	       chef.data_bags_path = "data_bags"
+	       chef.log_level = :debug
+	       chef.add_role "chef"
+	    end
+	  end
 
-      config.vm.define :chef_client_node do |chef_client_config|
-        chef_client_config.vm.network :private_network, ip: "10.33.33.50"
-        chef_client_config.vm.hostname = 'node.chef-demo.com'
-      end
-    end 
+	  config.vm.define :chef_client_node do |chef_client_config|
+	    chef_client_config.vm.network :private_network, ip: "10.33.33.50"
+	    chef_client_config.vm.hostname = 'node.abc.com'
+	  end
+	end 
 
 Additionally, I add the following in my machine's /etc/hosts
 
   `10.33.33.33 chef.chef-demo.com`
   `10.33.33.50 node.chef-demo.com`
 
+Now we need to create a role called 'chef' for the chef-server.
+	 $ mkdir roles
+	 $ vi roles/chef.json
+
+	 The contents of the chef.json file is as below:
+
+	 {
+	   "name": "chef",
+	   "chef_type": "role",
+	   "json_class": "Chef::Role",
+	   "description": "The base role for Chef Server",
+	   "default_attributes": {
+	     "chef-server": {
+	       "version": "latest",
+	       "configuration": {
+	         "chef_server_webui": {
+	           "enable": true
+	         }
+	       }
+	     }
+	   },
+	   "run_list": [
+	     "recipe[chef-server::default]"
+	   ]
+	 }
 
 After creating a file we start our vagrant. So let's do it.
 
@@ -76,8 +100,8 @@ It starts the process of bringing up the virtual machine. So after few seconds/m
 
 Pause. Its time to internalize what we've achieved so far. If you look at the provisioning of chef.chef-demo.com, we can reinforce a few concepts:
 
-1) The provisioning is done by chef-solo. chef-solo is a clean and easy way to provision a vm. As mentioned earlier, this is the only machine that we use chef-solo on. The node machine gets provisioned by the chef-server.
-2) We have provided the path for cookbooks, roles and data bags. These are concepts in Chef which you should read up on the side for better appreciation. Feel free to switch and look up what these directories contain.
+1) The provisioning is done by chef-solo. chef-solo is a clean and easy way to provision a vm. As mentioned earlier, this is the only machine that we use chef-solo on. The node machine gets provisioned by the chef-server.<br>
+2) We have provided the path for cookbooks, roles and data bags. These are concepts in Chef which you should read up on the side for better appreciation. Feel free to switch and look up what these directories contain.<br>
 3) We have applied a role called 'chef' on the node. Roles are modular ways of defining behavior on machines. Inspect the roles/chef.json file to get a feel of the behavior defined by this role. At the very bottom you would see a `run_list` key that contains the recipes that need to be cooked on machines that have this role.
 
 
@@ -117,7 +141,6 @@ This is the contents of our Berksfile
 	cookbook 'postgresql'
 	cookbook 'mysql'
 
-
 Now we can install cookbooks by running:
 		
 	$ berks install --path cookbooks
@@ -133,8 +156,7 @@ Knife is a tool used with chef-server. We have to initialise knife, so that it p
 	$ knife solo init .
 
 This creates a set of directories and files. 
- 
-	.
+ 	.
 	|-- Berksfile
 	|-- cookbooks
 	|-- data_bags
@@ -245,7 +267,7 @@ As you can see we get new client 'web_server'.
 		a/Nj7eM9p3v67I2Sj/ji2oouV2vWSrqmJ7Fw0D2vCrmsct3l8x4ynxICrrWgwULZ
 		9wIDAQAB
 		-----END PUBLIC KEY-----
-	``` 
+
 When a node runs the chef-client for the first time, it generally does not yet have 
 an API client identity, and so it cannot make authenticated requests to the server. This is where the validation client—known as the chef-validator—comes in. When the chef-client runs, it checks if it has a “client_key”. If the client key does not exist, it then attempts to borrow the identity of the chef-validator to register	itself with the server (“validation_key”).
 
@@ -313,7 +335,6 @@ So everything is set we can start creating the role. Use the below syntax to cre
 This will open the temporary file in the text editor. Here we have to add the recipes to the run_list[]. You can even specify the other details such as default_attributes and as well as environment based run_lists[]. After adding the details save the file and exit to succesffuly create a role. You can verify this by running below command.
 
      $ knife role list
- 
 
 The next step would be applying this role to a client node. We can see the existing nodes by running below command.
 
@@ -339,9 +360,8 @@ So we will edit the existing node settings by using knife.
 		  ]
 		}
 
-
-	This will open a temporary file in a text editor. Here add the role to the run_list[].
-	After adding the details save and exit to apply to the node.
+This will open a temporary file in a text editor. Here add the role to the run_list[].
+After adding the details save and exit to apply to the node.
 
 Login to the client node's shell using
 
